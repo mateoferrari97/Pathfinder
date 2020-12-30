@@ -3,12 +3,14 @@ package internal
 import (
 	"container/heap"
 	"fmt"
-	"math/rand"
-
 	"github.com/mateoferrari97/pathfinder/internal/maze"
 )
 
-const infinite = 1e10
+const infinity = 1e10
+
+type Randomize interface {
+	Intn(n int) int
+}
 
 type vertex struct {
 	position   *maze.Position
@@ -22,12 +24,14 @@ type edge struct {
 }
 
 type graph struct {
+	rand     Randomize
 	vertices map[string]*vertex
 	edges    map[string]*edge
 }
 
-func newGraph(maze *maze.Maze) *graph {
+func newGraph(maze *maze.Maze, rand Randomize) *graph {
 	graph := &graph{
+		rand:     rand,
 		vertices: make(map[string]*vertex),
 		edges:    make(map[string]*edge),
 	}
@@ -85,7 +89,7 @@ func (g *graph) addEdge(from *vertex, to *vertex) {
 	edge := &edge{
 		from:     from,
 		to:       to,
-		distance: rand.Intn(100),
+		distance: g.rand.Intn(100),
 	}
 
 	g.edges[fromTo] = edge
@@ -99,26 +103,26 @@ type DijkstraPathFinder struct {
 	weightTable   map[string]*item
 }
 
-func NewDijkstraPathFinder(maze *maze.Maze) *DijkstraPathFinder {
+func NewDijkstraPathFinder(maze *maze.Maze, rand Randomize) *DijkstraPathFinder {
 	return &DijkstraPathFinder{
 		maze:          maze,
-		graph:         newGraph(maze),
+		graph:         newGraph(maze, rand),
 		priorityQueue: newPriorityQueue(),
 		weightTable:   make(map[string]*item),
 	}
 }
 
-func (f *DijkstraPathFinder) setup(startPosition *maze.Position) {
+func (f *DijkstraPathFinder) setup(fromPosition *maze.Position) {
 	var index int
 	for _, currentVertex := range f.graph.vertices {
 		item := &item{
 			parent:   nil,
 			current:  currentVertex,
-			priority: infinite,
+			priority: infinity,
 			index:    index,
 		}
 
-		if startPosition.Equal(*currentVertex.position) {
+		if fromPosition.Equal(*currentVertex.position) {
 			item.priority = 0
 		}
 
@@ -130,24 +134,17 @@ func (f *DijkstraPathFinder) setup(startPosition *maze.Position) {
 	heap.Init(&f.priorityQueue)
 }
 
-func (f *DijkstraPathFinder) Find(startPosition *maze.Position, endPosition *maze.Position) ([]string, error) {
-	f.setup(startPosition)
-	return f.find(endPosition)
+func (f *DijkstraPathFinder) Find(fromPosition *maze.Position, toPosition *maze.Position) ([]string, error) {
+	f.setup(fromPosition)
+	return f.find(toPosition)
 }
 
-func (f *DijkstraPathFinder) find(endPosition *maze.Position) ([]string, error) {
-	previousVertex := make(map[string]struct{})
+func (f *DijkstraPathFinder) find(toPosition *maze.Position) ([]string, error) {
 	previousEdge := make(map[string]struct{})
 
 	for f.priorityQueue.Len() != 0 {
 		item := heap.Pop(&f.priorityQueue).(*item)
 		currentVertex := item.current
-
-		if _, seen := previousVertex[currentVertex.position.String()]; seen {
-			continue
-		}
-
-		previousVertex[currentVertex.position.String()] = struct{}{}
 
 		for _, neighbourVertex := range currentVertex.neighbours {
 			fromTo := fmt.Sprintf("%s-%s", currentVertex.position.String(), neighbourVertex.position.String())
@@ -176,14 +173,14 @@ func (f *DijkstraPathFinder) find(endPosition *maze.Position) ([]string, error) 
 	}
 
 	var path []string
-	current := f.weightTable[endPosition.String()]
-	for current.parent != nil {
-		current.current.position.WithValue(1)
+	pos := f.weightTable[toPosition.String()]
+	for pos.parent != nil {
+		pos.current.position.WithValue(1)
 		path = append(path, f.maze.String())
-		current = f.weightTable[current.parent.position.String()]
+		pos = f.weightTable[pos.parent.position.String()]
 	}
 
-	current.current.position.WithValue(1)
+	pos.current.position.WithValue(1)
 	path = append(path, f.maze.String())
 
 	return path, nil
