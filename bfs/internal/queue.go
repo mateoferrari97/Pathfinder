@@ -15,7 +15,7 @@ func NewQueue() *queue {
 	return &queue{}
 }
 
-func (q *queue) Push(position *position) {
+func (q *queue) push(position *position) {
 	n := &node{position: position}
 
 	switch q.length {
@@ -31,7 +31,7 @@ func (q *queue) Push(position *position) {
 	q.length++
 }
 
-func (q *queue) Pop() *position {
+func (q *queue) pop() *position {
 	if q.length == 0 {
 		return nil
 	}
@@ -48,6 +48,6 @@ func (q *queue) Pop() *position {
 	return candidate.position
 }
 
-func (q *queue) IsEmpty() bool {
+func (q *queue) isEmpty() bool {
 	return q.length == 0
 }

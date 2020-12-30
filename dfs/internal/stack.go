@@ -14,7 +14,7 @@ func NewStack() *stack {
 	return &stack{}
 }
 
-func (q *stack) Push(position *position) {
+func (q *stack) push(position *position) {
 	n := &node{
 		position: position,
 		next:     q.head,
@@ -24,7 +24,7 @@ func (q *stack) Push(position *position) {
 	q.length++
 }
 
-func (q *stack) Pop() *position {
+func (q *stack) pop() *position {
 	if q.length == 0 {
 		return nil
 	}
@@ -36,6 +36,6 @@ func (q *stack) Pop() *position {
 	return candidate.position
 }
 
-func (q *stack) IsEmpty() bool {
+func (q *stack) isEmpty() bool {
 	return q.length == 0
 }

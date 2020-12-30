@@ -23,10 +23,6 @@ func NewDFSPathFinder(maze *maze.Maze) *DFSPathFinder {
 }
 
 func (f *DFSPathFinder) Find(startPosition *maze.Position, endPosition *maze.Position) ([]string, error) {
-	if err := f.maze.Validate(*startPosition, *endPosition); err != nil {
-		return nil, err
-	}
-
 	return f.find(startPosition, endPosition)
 }
 
@@ -34,14 +30,13 @@ func (f *DFSPathFinder) find(startPosition *maze.Position, endPosition *maze.Pos
 	var positions []*maze.Position
 	previousPositions := make(map[string]struct{})
 
-	f.stack.Push(&position{
+	f.stack.push(&position{
 		parent:  nil,
 		current: startPosition,
 	})
 
-	for !f.stack.IsEmpty() {
-		pos := f.stack.Pop()
-
+	for !f.stack.isEmpty() {
+		pos := f.stack.pop()
 		if _, seen := previousPositions[pos.current.String()]; seen {
 			continue
 		}
@@ -61,12 +56,14 @@ func (f *DFSPathFinder) find(startPosition *maze.Position, endPosition *maze.Pos
 
 		neighbours := pos.current.GetNeighbours()
 		for _, neighbour := range neighbours {
-			next := &position{
-				parent:  pos,
-				current: neighbour,
-			}
+			if _, seen := previousPositions[neighbour.String()]; !seen {
+				next := &position{
+					parent:  pos,
+					current: neighbour,
+				}
 
-			f.stack.Push(next)
+				f.stack.push(next)
+			}
 		}
 	}
 

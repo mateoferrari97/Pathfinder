@@ -25,19 +25,14 @@ func (f *BFSPathFinder) Find(startPosition *maze.Position, endPosition *maze.Pos
 	var positions []*maze.Position
 	previousPositions := make(map[string]struct{})
 
-	f.queue.Push(&position{
+	previousPositions[startPosition.String()] = struct{}{}
+	f.queue.push(&position{
 		parent:  nil,
 		current: startPosition,
 	})
 
-	for !f.queue.IsEmpty() {
-		pos := f.queue.Pop()
-
-		if _, seen := previousPositions[pos.current.String()]; seen {
-			continue
-		}
-
-		previousPositions[pos.current.String()] = struct{}{}
+	for !f.queue.isEmpty() {
+		pos := f.queue.pop()
 
 		if endPosition.Equal(*pos.current) {
 			currentPosition := pos
@@ -52,12 +47,16 @@ func (f *BFSPathFinder) Find(startPosition *maze.Position, endPosition *maze.Pos
 
 		neighbours := pos.current.GetNeighbours()
 		for _, neighbour := range neighbours {
-			next := &position{
-				parent:  pos,
-				current: neighbour,
-			}
+			if _, seen := previousPositions[neighbour.String()]; !seen {
+				previousPositions[neighbour.String()] = struct{}{}
 
-			f.queue.Push(next)
+				next := &position{
+					parent:  pos,
+					current: neighbour,
+				}
+
+				f.queue.push(next)
+			}
 		}
 	}
 

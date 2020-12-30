@@ -17,7 +17,9 @@ func run() error {
 	m := maze.NewMaze()
 	pathFinder := internal.NewDijkstraPathFinder(m)
 
-	path, err := pathFinder.Find(m.GetPosition("0,0"), m.GetPosition("15,24"))
+	from, _ := m.GetPosition("1,1")
+	to, _ := m.GetPosition("0,0")
+	path, err := pathFinder.Find(from, to)
 	if err != nil {
 		return err
 	}

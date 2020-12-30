@@ -13,34 +13,34 @@ type item struct {
 	index int // The index of the item in the heap.
 }
 
-// A PriorityQueue implements heap.Interface and holds Items.
-type PriorityQueue []*item
+// A priorityQueue implements heap.Interface and holds Items.
+type priorityQueue []*item
 
-func newPriorityQueue() PriorityQueue {
-	return PriorityQueue{}
+func newPriorityQueue() priorityQueue {
+	return priorityQueue{}
 }
 
-func (pq PriorityQueue) Len() int { return len(pq) }
+func (pq priorityQueue) Len() int { return len(pq) }
 
-func (pq PriorityQueue) Less(i, j int) bool {
+func (pq priorityQueue) Less(i, j int) bool {
 	// We want Pop to give us the lowest, not lowest, priority so we use lower than here.
 	return pq[i].priority < pq[j].priority
 }
 
-func (pq PriorityQueue) Swap(i, j int) {
+func (pq priorityQueue) Swap(i, j int) {
 	pq[i], pq[j] = pq[j], pq[i]
 	pq[i].index = i
 	pq[j].index = j
 }
 
-func (pq *PriorityQueue) Push(x interface{}) {
+func (pq *priorityQueue) Push(x interface{}) {
 	n := len(*pq)
 	item := x.(*item)
 	item.index = n
 	*pq = append(*pq, item)
 }
 
-func (pq *PriorityQueue) Pop() interface{} {
+func (pq *priorityQueue) Pop() interface{} {
 	old := *pq
 	n := len(old)
 	item := old[n-1]
@@ -50,7 +50,7 @@ func (pq *PriorityQueue) Pop() interface{} {
 	return item
 }
 
-func (pq *PriorityQueue) update(item *item, priority int) {
+func (pq *priorityQueue) update(item *item, priority int) {
 	item.priority = priority
 	heap.Fix(pq, item.index)
 }

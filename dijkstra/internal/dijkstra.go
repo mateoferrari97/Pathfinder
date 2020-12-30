@@ -95,7 +95,7 @@ func (g *graph) addEdge(from *vertex, to *vertex) {
 type DijkstraPathFinder struct {
 	maze          *maze.Maze
 	graph         *graph
-	priorityQueue PriorityQueue
+	priorityQueue priorityQueue
 	weightTable   map[string]*item
 }
 
@@ -131,10 +131,6 @@ func (f *DijkstraPathFinder) setup(startPosition *maze.Position) {
 }
 
 func (f *DijkstraPathFinder) Find(startPosition *maze.Position, endPosition *maze.Position) ([]string, error) {
-	if err := f.maze.Validate(*startPosition, *endPosition); err != nil {
-		return nil, err
-	}
-
 	f.setup(startPosition)
 	return f.find(endPosition)
 }
