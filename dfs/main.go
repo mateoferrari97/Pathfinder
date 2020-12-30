@@ -17,7 +17,7 @@ func run() error {
 	maze := maze.NewMaze()
 	pathFinder := internal.NewDFSPathFinder(maze)
 
-	path, err := pathFinder.Find(maze.Position("1,1"), maze.Position("0,0"))
+	path, err := pathFinder.Find(maze.GetPosition("1,1"), maze.GetPosition("0,0"))
 	if err != nil {
 		return err
 	}

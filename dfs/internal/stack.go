@@ -1,6 +1,6 @@
 package internal
 
-type Stack struct {
+type stack struct {
 	head   *node
 	length int
 }
@@ -10,11 +10,11 @@ type node struct {
 	next     *node
 }
 
-func NewStack() *Stack {
-	return &Stack{}
+func NewStack() *stack {
+	return &stack{}
 }
 
-func (q *Stack) Push(position *position) {
+func (q *stack) Push(position *position) {
 	n := &node{
 		position: position,
 		next:     q.head,
@@ -24,7 +24,7 @@ func (q *Stack) Push(position *position) {
 	q.length++
 }
 
-func (q *Stack) Pop() *position {
+func (q *stack) Pop() *position {
 	if q.length == 0 {
 		return nil
 	}
@@ -36,6 +36,6 @@ func (q *Stack) Pop() *position {
 	return candidate.position
 }
 
-func (q *Stack) IsEmpty() bool {
+func (q *stack) IsEmpty() bool {
 	return q.length == 0
 }

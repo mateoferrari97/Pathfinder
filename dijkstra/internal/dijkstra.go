@@ -32,7 +32,7 @@ func newGraph(maze *maze.Maze) *graph {
 		edges:    make(map[string]*edge),
 	}
 
-	positions := maze.Positions()
+	positions := maze.GetPositions()
 	for _, position := range positions {
 		var currentVertex *vertex
 		if vx := graph.getVertex(position.String()); vx == nil {
@@ -43,7 +43,7 @@ func newGraph(maze *maze.Maze) *graph {
 			currentVertex = vx
 		}
 
-		neighbours := maze.Neighbours(position)
+		neighbours := position.GetNeighbours()
 		for _, neighbour := range neighbours {
 			var neighbourVertex *vertex
 			if vx := graph.getVertex(neighbour.String()); vx == nil {
@@ -96,7 +96,7 @@ type DijkstraPathFinder struct {
 	maze          *maze.Maze
 	graph         *graph
 	priorityQueue PriorityQueue
-	weightTable   map[string]*Item
+	weightTable   map[string]*item
 }
 
 func NewDijkstraPathFinder(maze *maze.Maze) *DijkstraPathFinder {
@@ -104,21 +104,21 @@ func NewDijkstraPathFinder(maze *maze.Maze) *DijkstraPathFinder {
 		maze:          maze,
 		graph:         newGraph(maze),
 		priorityQueue: newPriorityQueue(),
-		weightTable:   make(map[string]*Item),
+		weightTable:   make(map[string]*item),
 	}
 }
 
 func (f *DijkstraPathFinder) setup(startPosition *maze.Position) {
 	var index int
 	for _, currentVertex := range f.graph.vertices {
-		item := &Item{
+		item := &item{
 			parent:   nil,
 			current:  currentVertex,
 			priority: infinite,
 			index:    index,
 		}
 
-		if startPosition.Equal(currentVertex.position) {
+		if startPosition.Equal(*currentVertex.position) {
 			item.priority = 0
 		}
 
@@ -131,7 +131,7 @@ func (f *DijkstraPathFinder) setup(startPosition *maze.Position) {
 }
 
 func (f *DijkstraPathFinder) Find(startPosition *maze.Position, endPosition *maze.Position) ([]string, error) {
-	if err := f.maze.Validate(startPosition, endPosition); err != nil {
+	if err := f.maze.Validate(*startPosition, *endPosition); err != nil {
 		return nil, err
 	}
 
@@ -144,7 +144,7 @@ func (f *DijkstraPathFinder) find(endPosition *maze.Position) ([]string, error) 
 	previousEdge := make(map[string]struct{})
 
 	for f.priorityQueue.Len() != 0 {
-		item := heap.Pop(&f.priorityQueue).(*Item)
+		item := heap.Pop(&f.priorityQueue).(*item)
 		currentVertex := item.current
 
 		if _, seen := previousVertex[currentVertex.position.String()]; seen {

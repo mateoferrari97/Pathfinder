@@ -1,6 +1,6 @@
 package internal
 
-type Queue struct {
+type queue struct {
 	tail   *node
 	head   *node
 	length int
@@ -11,11 +11,11 @@ type node struct {
 	next     *node
 }
 
-func NewQueue() *Queue {
-	return &Queue{}
+func NewQueue() *queue {
+	return &queue{}
 }
 
-func (q *Queue) Push(position *position) {
+func (q *queue) Push(position *position) {
 	n := &node{position: position}
 
 	switch q.length {
@@ -31,7 +31,7 @@ func (q *Queue) Push(position *position) {
 	q.length++
 }
 
-func (q *Queue) Pop() *position {
+func (q *queue) Pop() *position {
 	if q.length == 0 {
 		return nil
 	}
@@ -48,6 +48,6 @@ func (q *Queue) Pop() *position {
 	return candidate.position
 }
 
-func (q *Queue) IsEmpty() bool {
+func (q *queue) IsEmpty() bool {
 	return q.length == 0
 }

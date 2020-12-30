@@ -14,10 +14,12 @@ func main() {
 }
 
 func run() error {
-	maze := maze.NewMaze()
-	pathFinder := internal.NewBFSPathFinder(maze)
+	m := maze.NewMaze()
+	pathFinder := internal.NewBFSPathFinder(m)
 
-	path, err := pathFinder.Find(maze.Position("0,0"), maze.Position("24,24"))
+	from, _ := m.GetPosition("5,0")
+	to, _ := m.GetPosition("24,5")
+	path, err := pathFinder.Find(from, to)
 	if err != nil {
 		return err
 	}

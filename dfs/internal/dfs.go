@@ -10,7 +10,7 @@ type position struct {
 }
 
 type DFSPathFinder struct {
-	stack *Stack
+	stack *stack
 	maze  *maze.Maze
 }
 
@@ -59,7 +59,7 @@ func (f *DFSPathFinder) find(startPosition *maze.Position, endPosition *maze.Pos
 			break
 		}
 
-		neighbours := f.maze.Neighbours(pos.current)
+		neighbours := pos.current.GetNeighbours()
 		for _, neighbour := range neighbours {
 			next := &position{
 				parent:  pos,

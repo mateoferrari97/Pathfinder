@@ -9,28 +9,19 @@ type position struct {
 	current *maze.Position
 }
 
-type DFSPathFinder struct {
-	queue *Queue
+type BFSPathFinder struct {
+	queue *queue
 	maze  *maze.Maze
 }
 
-func NewBFSPathFinder(maze *maze.Maze) *DFSPathFinder {
-	stack := NewQueue()
-	return &DFSPathFinder{
-		queue: stack,
+func NewBFSPathFinder(maze *maze.Maze) *BFSPathFinder {
+	return &BFSPathFinder{
+		queue: NewQueue(),
 		maze:  maze,
 	}
 }
 
-func (f *DFSPathFinder) Find(startPosition *maze.Position, endPosition *maze.Position) ([]string, error) {
-	if err := f.maze.Validate(*startPosition, *endPosition); err != nil {
-		return nil, err
-	}
-
-	return f.find(startPosition, endPosition)
-}
-
-func (f *DFSPathFinder) find(startPosition *maze.Position, endPosition *maze.Position) ([]string, error) {
+func (f *BFSPathFinder) Find(startPosition *maze.Position, endPosition *maze.Position) ([]string, error) {
 	var positions []*maze.Position
 	previousPositions := make(map[string]struct{})
 
@@ -59,7 +50,7 @@ func (f *DFSPathFinder) find(startPosition *maze.Position, endPosition *maze.Pos
 			break
 		}
 
-		neighbours := f.maze.Neighbours(pos.current)
+		neighbours := pos.current.GetNeighbours()
 		for _, neighbour := range neighbours {
 			next := &position{
 				parent:  pos,

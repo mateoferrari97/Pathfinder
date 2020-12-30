@@ -4,8 +4,8 @@ import (
 	"container/heap"
 )
 
-// An Item is something we manage in a priority queue.
-type Item struct {
+// An item is something we manage in a priority queue.
+type item struct {
 	parent   *vertex
 	current  *vertex // The value of the item; arbitrary.
 	priority int     // The priority of the item in the queue.
@@ -14,7 +14,7 @@ type Item struct {
 }
 
 // A PriorityQueue implements heap.Interface and holds Items.
-type PriorityQueue []*Item
+type PriorityQueue []*item
 
 func newPriorityQueue() PriorityQueue {
 	return PriorityQueue{}
@@ -35,7 +35,7 @@ func (pq PriorityQueue) Swap(i, j int) {
 
 func (pq *PriorityQueue) Push(x interface{}) {
 	n := len(*pq)
-	item := x.(*Item)
+	item := x.(*item)
 	item.index = n
 	*pq = append(*pq, item)
 }
@@ -50,7 +50,7 @@ func (pq *PriorityQueue) Pop() interface{} {
 	return item
 }
 
-func (pq *PriorityQueue) update(item *Item, priority int) {
+func (pq *PriorityQueue) update(item *item, priority int) {
 	item.priority = priority
 	heap.Fix(pq, item.index)
 }

@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	maxRow = 5
-	maxCol = 5
+	maxRow = 25
+	maxCol = 25
 )
 
 type Maze struct {
@@ -40,26 +40,6 @@ func NewMaze() *Maze {
 	return maze
 }
 
-func (m *Maze) Validate(startPosition Position, endPosition Position) error {
-	if startPosition.row < 0 {
-		return errors.New("start row must be positive")
-	}
-
-	if startPosition.col < 0 {
-		return errors.New("start column must be positive")
-	}
-
-	if endPosition.row > maxRow {
-		return errors.New("end row must be less than max row")
-	}
-
-	if endPosition.col > maxCol {
-		return errors.New("end column must be less than max column")
-	}
-
-	return nil
-}
-
 func (m *Maze) String() string {
 	var s []string
 	for row := 0; row < maxRow; row++ {
@@ -75,15 +55,15 @@ func (m *Maze) String() string {
 	return strings.Join(s, "")
 }
 
-func (m *Maze) Neighbours(position *Position) []*Position {
-	return position.Neighbours()
+func (m *Maze) GetPosition(key string) (*Position, error) {
+	if position, exist := m.positions[key]; exist {
+		return position, nil
+	}
+
+	return nil, errors.New("maze: position not found")
 }
 
-func (m *Maze) Position(key string) *Position {
-	return m.positions[key]
-}
-
-func (m *Maze) Positions() []*Position {
+func (m *Maze) GetPositions() []*Position {
 	var positions []*Position
 	for row := 0; row < maxRow; row++ {
 		for col := 0; col < maxCol; col++ {
@@ -102,7 +82,7 @@ type Position struct {
 	col   int
 }
 
-func (p *Position) Neighbours() []*Position {
+func (p *Position) GetNeighbours() []*Position {
 	var neighbours []*Position
 	startRow := p.row
 	endRow := p.row
