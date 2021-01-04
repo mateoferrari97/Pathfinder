@@ -3,6 +3,7 @@ package maze
 import (
 	"errors"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -128,4 +129,11 @@ func (p *Position) Equal(candidate Position) bool {
 
 func (p *Position) WithValue(value int) {
 	p.value = value
+}
+
+func (p *Position) Distance(q Position) int {
+	x := p.row - q.row
+	y := p.col - q.col
+
+	return int(math.Sqrt(math.Pow(float64(x), 2) + math.Pow(float64(y), 2)))
 }

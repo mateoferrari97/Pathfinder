@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
-
-	"github.com/mateoferrari97/pathfinder/dijkstra/internal"
+	"github.com/mateoferrari97/pathfinder/a_star/internal"
 	"github.com/mateoferrari97/pathfinder/internal/maze"
+	"math/rand"
 )
 
 func main() {
@@ -17,7 +16,7 @@ func main() {
 func run() error {
 	m := maze.NewMaze()
 	r := rand.New(rand.NewSource(100))
-	pathFinder := internal.NewDijkstraPathFinder(m, r)
+	pathFinder := internal.NewAStarPathFinder(m, r)
 
 	from, _ := m.GetPosition("1,1")
 	to, _ := m.GetPosition("0,24")
@@ -32,3 +31,4 @@ func run() error {
 
 	return nil
 }
+
