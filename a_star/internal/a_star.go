@@ -164,10 +164,10 @@ func (f *AStarPathFinder) find(to maze.Position) []string {
 			currentNeighbourEdge := f.graph.getEdge(currentVertex, neighbourVertex)
 			weightToNeighbour := item.currentBestWeight + currentNeighbourEdge.distance
 			neighbourItem := f.weightTable[neighbourVertex.position.String()]
-			if weightToNeighbour < neighbourItem.priority {
+			if float64(weightToNeighbour) < neighbourItem.priority {
 				neighbourItem.parent = currentVertex
 				neighbourItem.currentBestWeight = weightToNeighbour
-				newPriority := weightToNeighbour + neighbourVertex.position.Distance(to)
+				newPriority := float64(weightToNeighbour) + neighbourVertex.position.Distance(to)
 				f.priorityQueue.update(neighbourItem, newPriority)
 			}
 		}

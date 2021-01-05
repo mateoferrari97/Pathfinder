@@ -8,7 +8,7 @@ type item struct {
 	parent            *vertex
 	current           *vertex
 	currentBestWeight int
-	priority          int
+	priority          float64
 	index             int
 }
 
@@ -47,7 +47,7 @@ func (pq *priorityQueue) Pop() interface{} {
 	return item
 }
 
-func (pq *priorityQueue) update(item *item, priority int) {
+func (pq *priorityQueue) update(item *item, priority float64) {
 	item.priority = priority
 	heap.Fix(pq, item.index)
 }
